@@ -16,6 +16,7 @@ import {
 } from "@/lib/i18n/locales";
 import { siteScope } from "@/lib/i18n/scopes/site";
 import { getPaginatedNacebelCodes } from "@/lib/nacebelData";
+import { ogImagesFor } from "@/lib/site-metadata";
 import { breadcrumbList } from "@ingram-tech/nk-seo";
 import { JsonLd } from "@ingram-tech/nk-seo/components";
 import type { Metadata } from "next";
@@ -79,6 +80,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 			url: `${SITE_ORIGIN}${canonicalPath}`,
 			locale: OG_LOCALE[locale],
 			type: "article",
+			images: ogImagesFor(locale),
 		},
 		twitter: {
 			card: "summary",

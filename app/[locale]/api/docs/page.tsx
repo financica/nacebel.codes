@@ -6,6 +6,7 @@ import { createT, defineMessages, type Translator } from "@/lib/i18n/core";
 import { hreflangLanguages, SITE_ORIGIN } from "@/lib/i18n/hreflang";
 import { HTML_LANG, SUPPORTED_LOCALES, type Locale } from "@/lib/i18n/locales";
 import { siteScope } from "@/lib/i18n/scopes/site";
+import { ogImagesFor } from "@/lib/site-metadata";
 import { breadcrumbList } from "@ingram-tech/nk-seo";
 import { JsonLd } from "@ingram-tech/nk-seo/components";
 import type { Metadata } from "next";
@@ -44,6 +45,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 			description,
 			url: `${SITE_ORIGIN}${apiDocsPathFor(locale)}`,
 			type: "article",
+			images: ogImagesFor(locale),
 		},
 		twitter: {
 			card: "summary",

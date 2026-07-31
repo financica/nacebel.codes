@@ -1,9 +1,31 @@
 import type { Metadata, Viewport } from "next";
 import { createT } from "@/lib/i18n/core";
+import { SITE_ORIGIN } from "@/lib/i18n/hreflang";
 import { type Locale, OG_LOCALE } from "@/lib/i18n/locales";
 import { siteScope } from "@/lib/i18n/scopes/site";
 
 const siteName = "NACE-BEL 2025 Codes";
+
+/**
+ * The locale's share card, from `app/[locale]/opengraph-image.tsx`.
+ *
+ * Next attaches that file automatically only to the segment that declares it —
+ * `/[locale]`, i.e. the home page. Every deeper page returns its own
+ * `openGraph` object from `generateMetadata`, and sibling metadata objects are
+ * replaced rather than merged, which drops the inherited image. So each page
+ * spreads this in explicitly and they all advertise the same card.
+ */
+export function ogImagesFor(locale: Locale) {
+	const t = createT(locale, siteScope);
+	return [
+		{
+			url: `${SITE_ORIGIN}/${locale}/opengraph-image`,
+			width: 1200,
+			height: 630,
+			alt: t("NACE-BEL 2025 Codes — Search the Belgian classification"),
+		},
+	];
+}
 
 /** Base site metadata, shared by both root layouts (locale-parameterised). */
 export function buildRootMetadata(locale: Locale): Metadata {
