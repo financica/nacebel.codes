@@ -7,7 +7,7 @@ import type { MetadataRoute } from "next";
 
 const canonicalRoutes = [
 	{
-		pathFor: (loc: Locale) => `/${loc}/`,
+		pathFor: (loc: Locale) => `/${loc}`,
 		changeFrequency: "weekly" as const,
 		priority: 1,
 	},

@@ -132,7 +132,7 @@ export default async function CodePage({ params }: PageProps) {
 	const t = createT(locale, siteScope);
 	const title = codeTitleFor(data, locale);
 	const breadcrumbJsonLd = breadcrumbList([
-		{ name: t("NACE-BEL 2025 Codes"), url: `${SITE_ORIGIN}/` },
+		{ name: t("NACE-BEL 2025 Codes"), url: `${SITE_ORIGIN}/${locale}` },
 		...ancestors.map((ancestor) => ({
 			name: `${ancestor.code} ${codeTitleFor(ancestor, locale)}`,
 			url: `${SITE_ORIGIN}${codeHrefFor(ancestor, locale)}`,

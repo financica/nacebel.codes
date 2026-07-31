@@ -1,6 +1,6 @@
 import NacebelSearchClient from "@/components/nacebel-search";
 import { createT } from "@/lib/i18n/core";
-import { hreflangLanguages } from "@/lib/i18n/hreflang";
+import { hreflangLanguages, SITE_ORIGIN } from "@/lib/i18n/hreflang";
 import { SUPPORTED_LOCALES, type Locale } from "@/lib/i18n/locales";
 import { siteScope } from "@/lib/i18n/scopes/site";
 import { getPaginatedNacebelCodes } from "@/lib/nacebelData";
@@ -17,7 +17,7 @@ function isLocale(value: string): value is Locale {
 	return (SUPPORTED_LOCALES as readonly string[]).includes(value);
 }
 
-const homePathFor = (loc: Locale) => `/${loc}/`;
+const homePathFor = (loc: Locale) => `/${loc}`;
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
 	const { locale } = await params;
@@ -33,13 +33,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 		title: { absolute: metaTitle },
 		description: metaDescription,
 		alternates: {
-			canonical: `/${locale}/`,
+			canonical: homePathFor(locale),
 			languages: hreflangLanguages(homePathFor),
 		},
 		openGraph: {
 			title: metaTitle,
 			description: metaDescription,
-			url: `https://nacebel.codes/${locale}/`,
+			url: `${SITE_ORIGIN}${homePathFor(locale)}`,
 			type: "website",
 		},
 		twitter: {

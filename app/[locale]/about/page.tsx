@@ -58,7 +58,7 @@ function buildJsonLd(locale: Locale, t: Translator<typeof siteScope>) {
 	const title = t("About NACE-BEL Codes");
 
 	const breadcrumbJsonLd = breadcrumbList([
-		{ name: t("NACE-BEL 2025 Codes"), url: `${SITE_ORIGIN}/${locale}/` },
+		{ name: t("NACE-BEL 2025 Codes"), url: `${SITE_ORIGIN}/${locale}` },
 		{ name: title, url },
 	]);
 
