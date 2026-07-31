@@ -4,6 +4,8 @@ import { createT, defineMessages, type Translator } from "@/lib/i18n/core";
 import { hreflangLanguages, SITE_ORIGIN } from "@/lib/i18n/hreflang";
 import { HTML_LANG, SUPPORTED_LOCALES, type Locale } from "@/lib/i18n/locales";
 import { siteScope } from "@/lib/i18n/scopes/site";
+import { breadcrumbList } from "@ingram-tech/nk-seo";
+import { JsonLd } from "@ingram-tech/nk-seo/components";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
@@ -53,20 +55,14 @@ function buildJsonLd(locale: Locale, t: Translator<typeof siteScope>) {
 	const url = `${SITE_ORIGIN}${aboutPathFor(locale)}`;
 	const title = t("About NACE-BEL Codes");
 
-	const breadcrumbJsonLd = {
-		"@context": "https://schema.org",
-		"@type": "BreadcrumbList",
-		itemListElement: [
-			{
-				"@type": "ListItem",
-				position: 1,
-				name: t("NACE-BEL 2025 Codes"),
-				item: `${SITE_ORIGIN}/${locale}/`,
-			},
-			{ "@type": "ListItem", position: 2, name: title, item: url },
-		],
-	};
+	const breadcrumbJsonLd = breadcrumbList([
+		{ name: t("NACE-BEL 2025 Codes"), url: `${SITE_ORIGIN}/${locale}/` },
+		{ name: title, url },
+	]);
 
+	// nk-seo's `article` builder carries no `inLanguage` or `about`, both of
+	// which this page relies on, so the node stays hand-built and goes through
+	// <JsonLd> for serialization.
 	const articleJsonLd = {
 		"@context": "https://schema.org",
 		"@type": "Article",
@@ -169,16 +165,7 @@ export default async function AboutPage({ params }: PageProps) {
 
 	return (
 		<div className="bg-background text-foreground">
-			<script
-				type="application/ld+json"
-				// oxlint-disable-next-line react/no-danger -- JSON-LD payload
-				dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
-			/>
-			<script
-				type="application/ld+json"
-				// oxlint-disable-next-line react/no-danger -- JSON-LD payload
-				dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
-			/>
+			<JsonLd data={[breadcrumbJsonLd, articleJsonLd]} />
 			<div className="mx-auto max-w-5xl space-y-8 px-4 py-8 sm:py-12">
 				<header className="border-b border-border pb-8">
 					<h1 className="text-3xl font-extrabold tracking-tight sm:text-4xl">

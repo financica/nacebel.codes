@@ -7,7 +7,7 @@ import {
 	loadCodeData,
 } from "@/lib/code-page";
 import { createT } from "@/lib/i18n/core";
-import { hreflangLanguages } from "@/lib/i18n/hreflang";
+import { hreflangLanguages, SITE_ORIGIN } from "@/lib/i18n/hreflang";
 import {
 	HTML_LANG,
 	OG_LOCALE,
@@ -16,6 +16,8 @@ import {
 } from "@/lib/i18n/locales";
 import { siteScope } from "@/lib/i18n/scopes/site";
 import { getPaginatedNacebelCodes } from "@/lib/nacebelData";
+import { breadcrumbList } from "@ingram-tech/nk-seo";
+import { JsonLd } from "@ingram-tech/nk-seo/components";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
@@ -74,7 +76,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 		openGraph: {
 			title: `${data.code} ${title}`,
 			description,
-			url: `https://nacebel.codes${canonicalPath}`,
+			url: `${SITE_ORIGIN}${canonicalPath}`,
 			locale: OG_LOCALE[locale],
 			type: "article",
 		},
@@ -127,61 +129,37 @@ export default async function CodePage({ params }: PageProps) {
 
 	const t = createT(locale, siteScope);
 	const title = codeTitleFor(data, locale);
-	const breadcrumbItems = [
-		{
-			"@type": "ListItem" as const,
-			position: 1,
-			name: t("NACE-BEL 2025 Codes"),
-			item: "https://nacebel.codes/",
-		},
-		...ancestors.map((ancestor, index) => ({
-			"@type": "ListItem" as const,
-			position: index + 2,
+	const breadcrumbJsonLd = breadcrumbList([
+		{ name: t("NACE-BEL 2025 Codes"), url: `${SITE_ORIGIN}/` },
+		...ancestors.map((ancestor) => ({
 			name: `${ancestor.code} ${codeTitleFor(ancestor, locale)}`,
-			item: `https://nacebel.codes${codeHrefFor(ancestor, locale)}`,
+			url: `${SITE_ORIGIN}${codeHrefFor(ancestor, locale)}`,
 		})),
-		{
-			"@type": "ListItem" as const,
-			position: ancestors.length + 2,
-			name: `${data.code} ${title}`,
-			item: `https://nacebel.codes${canonicalPath}`,
-		},
-	];
+		{ name: `${data.code} ${title}`, url: `${SITE_ORIGIN}${canonicalPath}` },
+	]);
 
-	const breadcrumbJsonLd = {
-		"@context": "https://schema.org",
-		"@type": "BreadcrumbList",
-		itemListElement: breadcrumbItems,
-	};
-
+	// No nk-seo builder covers DefinedTerm, so this node stays hand-built —
+	// <JsonLd> still serializes it with `<` escaped, which matters here because
+	// the title comes from the NACE-BEL dataset rather than from our own source.
 	const definedTermJsonLd = {
 		"@context": "https://schema.org",
 		"@type": "DefinedTerm",
-		"@id": `https://nacebel.codes${canonicalPath}`,
+		"@id": `${SITE_ORIGIN}${canonicalPath}`,
 		name: title,
 		alternateName: data.code,
 		termCode: data.code,
-		url: `https://nacebel.codes${canonicalPath}`,
+		url: `${SITE_ORIGIN}${canonicalPath}`,
 		inLanguage: HTML_LANG[locale],
 		inDefinedTermSet: {
 			"@type": "DefinedTermSet",
 			name: "NACE-BEL 2025",
-			url: "https://nacebel.codes/",
+			url: `${SITE_ORIGIN}/`,
 		},
 	};
 
 	return (
 		<>
-			<script
-				type="application/ld+json"
-				// oxlint-disable-next-line react/no-danger -- JSON-LD payload
-				dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
-			/>
-			<script
-				type="application/ld+json"
-				// oxlint-disable-next-line react/no-danger -- JSON-LD payload
-				dangerouslySetInnerHTML={{ __html: JSON.stringify(definedTermJsonLd) }}
-			/>
+			<JsonLd data={[breadcrumbJsonLd, definedTermJsonLd]} />
 			<NacebelCodeDetail
 				data={data}
 				locale={locale}

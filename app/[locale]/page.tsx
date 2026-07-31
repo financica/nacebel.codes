@@ -4,6 +4,7 @@ import { hreflangLanguages } from "@/lib/i18n/hreflang";
 import { SUPPORTED_LOCALES, type Locale } from "@/lib/i18n/locales";
 import { siteScope } from "@/lib/i18n/scopes/site";
 import { getPaginatedNacebelCodes } from "@/lib/nacebelData";
+import { JsonLd } from "@ingram-tech/nk-seo/components";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
@@ -49,6 +50,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 	};
 }
 
+// Both nodes stay hand-built: nk-seo's `website` builder takes only
+// name/url/publisher (no `alternateName`, `inLanguage` or the SearchAction),
+// and it ships no Dataset builder at all. <JsonLd> still does the serializing.
 const websiteJsonLd = {
 	"@context": "https://schema.org",
 	"@type": "WebSite",
@@ -103,16 +107,7 @@ export default async function Home({ params }: PageProps) {
 
 	return (
 		<div className="min-h-screen bg-background">
-			<script
-				type="application/ld+json"
-				// oxlint-disable-next-line react/no-danger -- JSON-LD payload, not user input
-				dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
-			/>
-			<script
-				type="application/ld+json"
-				// oxlint-disable-next-line react/no-danger -- JSON-LD payload, not user input
-				dangerouslySetInnerHTML={{ __html: JSON.stringify(datasetJsonLd) }}
-			/>
+			<JsonLd data={[websiteJsonLd, datasetJsonLd]} />
 			<Suspense>
 				<NacebelSearchClient initialCodes={initialCodes} />
 			</Suspense>

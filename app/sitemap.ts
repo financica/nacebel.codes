@@ -2,6 +2,7 @@ import { codeHrefFor } from "@/lib/code-page";
 import { hreflangLanguages, SITE_ORIGIN } from "@/lib/i18n/hreflang";
 import type { Locale } from "@/lib/i18n/locales";
 import { getPaginatedNacebelCodes } from "@/lib/nacebelData";
+import { createSitemap, type SitemapRoute } from "@ingram-tech/nk-seo";
 import type { MetadataRoute } from "next";
 
 const canonicalRoutes = [
@@ -23,27 +24,28 @@ const canonicalRoutes = [
 ];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-	const lastModified = new Date();
+	const { data: allCodes } = await getPaginatedNacebelCodes(1, 100000);
 
 	// The bare paths redirect to a locale prefix, so every sitemap URL — and its
 	// hreflang set — points at the resolvable per-locale pages (English primary).
-	const canonical: MetadataRoute.Sitemap = canonicalRoutes.map((route) => ({
-		url: `${SITE_ORIGIN}${route.pathFor("en")}`,
-		lastModified,
-		changeFrequency: route.changeFrequency,
-		priority: route.priority,
-		alternates: { languages: hreflangLanguages(route.pathFor) },
-	}));
+	const routes: SitemapRoute[] = [
+		...canonicalRoutes.map((route) => ({
+			path: route.pathFor("en"),
+			changeFrequency: route.changeFrequency,
+			priority: route.priority,
+			languages: hreflangLanguages(route.pathFor),
+		})),
+		...allCodes.map((code) => ({
+			path: codeHrefFor(code, "en"),
+			changeFrequency: "yearly" as const,
+			priority: 0.5,
+			languages: hreflangLanguages((loc) => codeHrefFor(code, loc)),
+		})),
+	];
 
-	const { data: allCodes } = await getPaginatedNacebelCodes(1, 100000);
-
-	const codeEntries: MetadataRoute.Sitemap = allCodes.map((code) => ({
-		url: `${SITE_ORIGIN}${codeHrefFor(code, "en")}`,
-		lastModified,
-		changeFrequency: "yearly" as const,
-		priority: 0.5,
-		alternates: { languages: hreflangLanguages((loc) => codeHrefFor(code, loc)) },
-	}));
-
-	return [...canonical, ...codeEntries];
+	return createSitemap({
+		baseUrl: SITE_ORIGIN,
+		lastModified: new Date(),
+		routes,
+	});
 }
