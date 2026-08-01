@@ -17,7 +17,7 @@ import {
 import { siteScope } from "@/lib/i18n/scopes/site";
 import { getPaginatedNacebelCodes } from "@/lib/nacebelData";
 import { ogImagesFor } from "@/lib/site-metadata";
-import { breadcrumbList } from "@ingram-tech/nk-seo";
+import { breadcrumbList, definedTerm } from "@ingram-tech/nk-seo";
 import { JsonLd } from "@ingram-tech/nk-seo/components";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
@@ -140,24 +140,21 @@ export default async function CodePage({ params }: PageProps) {
 		{ name: `${data.code} ${title}`, url: `${SITE_ORIGIN}${canonicalPath}` },
 	]);
 
-	// No nk-seo builder covers DefinedTerm, so this node stays hand-built —
-	// <JsonLd> still serializes it with `<` escaped, which matters here because
-	// the title comes from the NACE-BEL dataset rather than from our own source.
-	const definedTermJsonLd = {
-		"@context": "https://schema.org",
-		"@type": "DefinedTerm",
-		"@id": `${SITE_ORIGIN}${canonicalPath}`,
+	const definedTermJsonLd = definedTerm({
 		name: title,
-		alternateName: data.code,
 		termCode: data.code,
 		url: `${SITE_ORIGIN}${canonicalPath}`,
 		inLanguage: HTML_LANG[locale],
 		inDefinedTermSet: {
-			"@type": "DefinedTermSet",
 			name: "NACE-BEL 2025",
-			url: `${SITE_ORIGIN}/`,
+			url: SITE_ORIGIN,
+			version: "2025",
 		},
-	};
+		extra: {
+			"@id": `${SITE_ORIGIN}${canonicalPath}`,
+			alternateName: data.code,
+		},
+	});
 
 	return (
 		<>

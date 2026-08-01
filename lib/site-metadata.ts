@@ -1,3 +1,4 @@
+import { ogImageMetadata } from "@ingram-tech/nk-seo";
 import type { Metadata, Viewport } from "next";
 import { createT } from "@/lib/i18n/core";
 import { SITE_ORIGIN } from "@/lib/i18n/hreflang";
@@ -17,14 +18,11 @@ const siteName = "NACE-BEL 2025 Codes";
  */
 export function ogImagesFor(locale: Locale) {
 	const t = createT(locale, siteScope);
-	return [
-		{
-			url: `${SITE_ORIGIN}/${locale}/opengraph-image`,
-			width: 1200,
-			height: 630,
-			alt: t("NACE-BEL 2025 Codes — Search the Belgian classification"),
-		},
-	];
+	return ogImageMetadata({
+		baseUrl: SITE_ORIGIN,
+		path: `/${locale}/opengraph-image`,
+		alt: t("NACE-BEL 2025 Codes — Search the Belgian classification"),
+	});
 }
 
 /** Base site metadata, shared by both root layouts (locale-parameterised). */

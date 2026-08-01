@@ -4,6 +4,7 @@ import { hreflangLanguages, SITE_ORIGIN } from "@/lib/i18n/hreflang";
 import { SUPPORTED_LOCALES, type Locale } from "@/lib/i18n/locales";
 import { siteScope } from "@/lib/i18n/scopes/site";
 import { getPaginatedNacebelCodes } from "@/lib/nacebelData";
+import { dataset, website } from "@ingram-tech/nk-seo";
 import { JsonLd } from "@ingram-tech/nk-seo/components";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
@@ -50,54 +51,47 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 	};
 }
 
-// Both nodes stay hand-built: nk-seo's `website` builder takes only
-// name/url/publisher (no `alternateName`, `inLanguage` or the SearchAction),
-// and it ships no Dataset builder at all. <JsonLd> still does the serializing.
-const websiteJsonLd = {
-	"@context": "https://schema.org",
-	"@type": "WebSite",
-	name: "NACE-BEL 2025 Codes",
-	alternateName: "NACEBEL 2025",
-	url: "https://nacebel.codes",
-	inLanguage: ["en", "nl", "fr", "de"],
-	publisher: {
-		"@type": "Organization",
-		name: "Ingram Technologies",
-		url: "https://ingram.tech",
-	},
-	potentialAction: {
-		"@type": "SearchAction",
-		target: {
-			"@type": "EntryPoint",
-			urlTemplate: "https://nacebel.codes/?q={search_term_string}",
-		},
-		"query-input": "required name=search_term_string",
-	},
+const publisher = {
+	name: "Ingram Technologies",
+	url: "https://ingram.tech",
 };
 
-const datasetJsonLd = {
-	"@context": "https://schema.org",
-	"@type": "Dataset",
+const websiteJsonLd = website({
+	name: "NACE-BEL 2025 Codes",
+	url: SITE_ORIGIN,
+	publisher,
+	extra: {
+		alternateName: "NACEBEL 2025",
+		inLanguage: ["en", "nl", "fr", "de"],
+		potentialAction: {
+			"@type": "SearchAction",
+			target: {
+				"@type": "EntryPoint",
+				urlTemplate: `${SITE_ORIGIN}/?q={search_term_string}`,
+			},
+			"query-input": "required name=search_term_string",
+		},
+	},
+});
+
+const datasetJsonLd = dataset({
 	name: "NACE-BEL 2025 — Belgian economic activity classification",
-	alternateName: ["NACE-BEL 2025", "NACEBEL 2025"],
-	url: "https://nacebel.codes",
+	description:
+		"The full NACE-BEL 2025 classification of Belgian economic activity codes, in Dutch, French, English and German.",
+	url: SITE_ORIGIN,
 	inLanguage: ["nl", "fr", "en", "de"],
 	keywords: ["NACE-BEL", "NACE", "economic activity", "Belgium", "classification"],
 	isAccessibleForFree: true,
-	license: "https://nacebel.codes/about",
-	creator: {
-		"@type": "Organization",
-		name: "Ingram Technologies",
-		url: "https://ingram.tech",
-	},
+	license: `${SITE_ORIGIN}/en/about`,
+	creator: publisher,
 	distribution: [
 		{
-			"@type": "DataDownload",
 			encodingFormat: "application/json",
-			contentUrl: "https://nacebel.codes/api/v1/nacebel-codes/2025",
+			contentUrl: `${SITE_ORIGIN}/api/v1/nacebel-codes/2025`,
 		},
 	],
-};
+	extra: { alternateName: ["NACE-BEL 2025", "NACEBEL 2025"] },
+});
 
 export default async function Home({ params }: PageProps) {
 	const { locale } = await params;

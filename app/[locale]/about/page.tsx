@@ -5,7 +5,7 @@ import { hreflangLanguages, SITE_ORIGIN } from "@/lib/i18n/hreflang";
 import { HTML_LANG, SUPPORTED_LOCALES, type Locale } from "@/lib/i18n/locales";
 import { siteScope } from "@/lib/i18n/scopes/site";
 import { ogImagesFor } from "@/lib/site-metadata";
-import { breadcrumbList } from "@ingram-tech/nk-seo";
+import { article, breadcrumbList } from "@ingram-tech/nk-seo";
 import { JsonLd } from "@ingram-tech/nk-seo/components";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
@@ -62,27 +62,20 @@ function buildJsonLd(locale: Locale, t: Translator<typeof siteScope>) {
 		{ name: title, url },
 	]);
 
-	// nk-seo's `article` builder carries no `inLanguage` or `about`, both of
-	// which this page relies on, so the node stays hand-built and goes through
-	// <JsonLd> for serialization.
-	const articleJsonLd = {
-		"@context": "https://schema.org",
-		"@type": "Article",
+	const articleJsonLd = article({
 		headline: title,
 		description: t(aboutDescription),
 		url,
-		inLanguage: HTML_LANG[locale],
-		about: [
-			{ "@type": "Thing", name: "NACE" },
-			{ "@type": "Thing", name: "NACE-BEL" },
-			{ "@type": "Thing", name: "Belgian economic activity classification" },
-		],
-		publisher: {
-			"@type": "Organization",
-			name: "Ingram Technologies",
-			url: "https://ingram.tech",
+		publisher: { name: "Ingram Technologies", url: "https://ingram.tech" },
+		extra: {
+			inLanguage: HTML_LANG[locale],
+			about: [
+				{ "@type": "Thing", name: "NACE" },
+				{ "@type": "Thing", name: "NACE-BEL" },
+				{ "@type": "Thing", name: "Belgian economic activity classification" },
+			],
 		},
-	};
+	});
 
 	return { breadcrumbJsonLd, articleJsonLd };
 }

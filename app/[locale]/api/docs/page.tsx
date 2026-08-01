@@ -7,7 +7,7 @@ import { hreflangLanguages, SITE_ORIGIN } from "@/lib/i18n/hreflang";
 import { HTML_LANG, SUPPORTED_LOCALES, type Locale } from "@/lib/i18n/locales";
 import { siteScope } from "@/lib/i18n/scopes/site";
 import { ogImagesFor } from "@/lib/site-metadata";
-import { breadcrumbList } from "@ingram-tech/nk-seo";
+import { article, breadcrumbList } from "@ingram-tech/nk-seo";
 import { JsonLd } from "@ingram-tech/nk-seo/components";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
@@ -64,28 +64,23 @@ function buildJsonLd(locale: Locale, t: Translator<typeof siteScope>) {
 		{ name: title, url },
 	]);
 
-	// TechArticle is outside nk-seo's `article` union (and the node carries
-	// `proficiencyLevel` / a nested WebAPI), so it stays hand-built.
-	const apiJsonLd = {
-		"@context": "https://schema.org",
-		"@type": "TechArticle",
+	const apiJsonLd = article({
+		type: "TechArticle",
 		headline: title,
 		description: t(apiDescription),
 		url,
-		inLanguage: HTML_LANG[locale],
-		proficiencyLevel: "Beginner",
-		about: {
-			"@type": "WebAPI",
-			name: "NACE-BEL 2025 API",
-			documentation: url,
-			url: "https://nacebel.codes/api/v1/nacebel-codes/2025",
+		publisher: { name: "Ingram Technologies", url: "https://ingram.tech" },
+		extra: {
+			inLanguage: HTML_LANG[locale],
+			proficiencyLevel: "Beginner",
+			about: {
+				"@type": "WebAPI",
+				name: "NACE-BEL 2025 API",
+				documentation: url,
+				url: `${SITE_ORIGIN}/api/v1/nacebel-codes/2025`,
+			},
 		},
-		publisher: {
-			"@type": "Organization",
-			name: "Ingram Technologies",
-			url: "https://ingram.tech",
-		},
-	};
+	});
 
 	return { breadcrumbJsonLd, apiJsonLd };
 }
