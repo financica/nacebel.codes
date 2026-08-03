@@ -1,10 +1,24 @@
-import { NACEBEL, type NACEBELCode } from "nace-codes/nacebel";
+import { NACEBEL, type NACEBELCode } from "@financica/nace-codes/nacebel";
+import de from "@financica/nace-codes/lang/de";
+import fr from "@financica/nace-codes/lang/fr";
+import nl from "@financica/nace-codes/lang/nl";
+import deNotes from "@financica/nace-codes/nacebel/lang/de";
+import frNotes from "@financica/nace-codes/nacebel/lang/fr";
+import nlNotes from "@financica/nace-codes/nacebel/lang/nl";
 
 let nacebelInstance: NACEBEL | null = null;
 
 function getNacebelInstance(): NACEBEL {
 	if (!nacebelInstance) {
-		nacebelInstance = new NACEBEL({ preload: true });
+		// Since 3.0.0 only English ships in the bundle. This site renders and
+		// searches all four languages server-side, so every pack is loaded
+		// eagerly: `lang/*` carries the EU headings (`description`), and
+		// `nacebel/lang/*` the Belgian explanatory notes. `nationalTitles` need
+		// no pack.
+		nacebelInstance = new NACEBEL({
+			preload: true,
+			languages: [de, fr, nl, deNotes, frNotes, nlNotes],
+		});
 	}
 	return nacebelInstance;
 }
