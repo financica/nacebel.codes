@@ -1,16 +1,16 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import { useLocale } from "@/contexts/locale-context";
+import { EXPORT_FORMAT_LABELS, type ExportFormat, exportCodes } from "@/lib/export";
 import { toast } from "sonner";
 import { useT } from "@/lib/i18n";
 import { siteScope } from "@/lib/i18n/scopes/site";
 import { slugify } from "@/lib/slug";
 import type { NacebelCode } from "@/types";
-import { DownloadIcon } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
+import { ExportMenu } from "./export-menu";
 import { NacebelCodeList } from "./nacebel-code-list";
 import { PageFooter } from "./page-footer";
 import { PaginationControls } from "./pagination-controls";
@@ -245,41 +245,27 @@ export default function NacebelSearchClient({
 		[locale],
 	);
 
-	const exportToCSV = () => {
-		const headers = [
-			t("Level"),
-			t("Code"),
-			`${t("Description")} (${locale.toUpperCase()})`,
-		];
-		const csvContent = [
-			headers.join(","),
-			...filteredCodes.map((code) =>
-				[
-					code.level,
-					code.code,
-					`"${(code.titles[locale] || "").replace(/"/g, '""')}"`,
-				].join(","),
-			),
-		].join("\n");
-
-		const blob = new Blob([`﻿${csvContent}`], {
-			type: "text/csv;charset=utf-8;",
-		});
-		const url = URL.createObjectURL(blob);
-		const link = document.createElement("a");
-		link.href = url;
-		link.download = `nacebel_codes_${locale}.csv`;
-		document.body.appendChild(link);
-		link.click();
-		document.body.removeChild(link);
-		URL.revokeObjectURL(url);
-		toast(
-			t("Exported {count} codes to CSV", {
-				count: filteredCodes.length,
-			}),
-			{ duration: 3000 },
-		);
-	};
+	const handleExport = useCallback(
+		(format: ExportFormat) => {
+			exportCodes(format, {
+				codes: filteredCodes,
+				locale,
+				columns: {
+					level: t("Level"),
+					code: t("Code"),
+					title: `${t("Description")} (${locale.toUpperCase()})`,
+				},
+			});
+			toast(
+				t("Exported {count} codes as {format}", {
+					count: filteredCodes.length,
+					format: EXPORT_FORMAT_LABELS[format],
+				}),
+				{ duration: 3000 },
+			);
+		},
+		[filteredCodes, locale, t],
+	);
 
 	if (initialCodes.length === 0) {
 		return (
@@ -355,15 +341,12 @@ export default function NacebelSearchClient({
 								: null}
 						</p>
 					</div>
-					<Button
-						variant="outline"
-						size="sm"
-						onClick={exportToCSV}
-						className="h-9 shrink-0 gap-2 self-start px-3 sm:self-auto"
-					>
-						<DownloadIcon className="h-4 w-4" />
-						<span>{t("Export CSV")}</span>
-					</Button>
+					<ExportMenu
+						label={t("Export")}
+						disabled={filteredCodes.length === 0}
+						onExport={handleExport}
+						className="shrink-0 self-start sm:self-auto"
+					/>
 				</div>
 
 				{/* The ruled directory index. */}
