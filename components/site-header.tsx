@@ -45,6 +45,12 @@ export function SiteHeader() {
 					>
 						{t("API")}
 					</a>
+					<a
+						href={`/${locale}/dataset`}
+						className="hidden rounded-md px-2.5 py-1.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground sm:block sm:px-3"
+					>
+						{t("Dataset")}
+					</a>
 					<span className="mx-1 hidden h-5 w-px bg-border sm:block" />
 					<ThemeToggle theme={theme ?? "system"} setTheme={setTheme} />
 					<LanguageSwitcher />

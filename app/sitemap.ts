@@ -17,6 +17,11 @@ const canonicalRoutes = [
 		priority: 0.7,
 	},
 	{
+		pathFor: (loc: Locale) => `/${loc}/dataset`,
+		changeFrequency: "monthly" as const,
+		priority: 0.8,
+	},
+	{
 		pathFor: (loc: Locale) => `/${loc}/api/docs`,
 		changeFrequency: "monthly" as const,
 		priority: 0.6,

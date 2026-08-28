@@ -222,3 +222,53 @@ export async function getNacebelAncestors(
 	const ancestors = getNacebelInstance().getAncestors(idWithoutDots);
 	return ancestors.map((code) => mapToPublicNacebelCode(code, false)).reverse();
 }
+
+export interface DatasetRecord {
+	level: number;
+	code: string;
+	/** Parent code in the hierarchy (section letter for a division), absent for a section. */
+	parent?: string;
+	titles: PublicNacebelCode["titles"];
+	description: PublicNacebelCode["description"];
+	explanatoryNote?: PublicNacebelCode["explanatoryNote"];
+}
+
+/**
+ * Every code with its parent and full explanatory note — the paid dataset.
+ * Sorted by section then code, like the directory.
+ */
+export function getFullDataset(): DatasetRecord[] {
+	const nacebel = getNacebelInstance();
+	return nacebel
+		.getAllCodes()
+		.sort((a, b) => {
+			const ka = sectionSortKey(a);
+			const kb = sectionSortKey(b);
+			return ka < kb ? -1 : ka > kb ? 1 : 0;
+		})
+		.map((code) => {
+			const {
+				level,
+				code: displayCode,
+				titles,
+				description,
+				explanatoryNote,
+			} = mapToPublicNacebelCode(code, false);
+			// `parent` is only populated for levels 1–4 in the source; deeper
+			// levels nest by code prefix.
+			const parent =
+				code.level === 1
+					? undefined
+					: code.level === 2
+						? code.parent
+						: formatCodeForDisplay(code.code.slice(0, -1));
+			return {
+				level,
+				code: displayCode,
+				...(parent ? { parent } : {}),
+				titles,
+				description,
+				...(explanatoryNote ? { explanatoryNote } : {}),
+			};
+		});
+}

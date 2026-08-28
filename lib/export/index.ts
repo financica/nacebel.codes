@@ -1,5 +1,6 @@
 import type { Language, NacebelCode } from "@/types";
 
+import { buildCsvText } from "./csv";
 import { buildXlsx } from "./xlsx";
 
 export type ExportFormat = "csv" | "json" | "xlsx";
@@ -29,21 +30,13 @@ function toRows({ codes, locale }: ExportInput): [number, string, string][] {
 	return codes.map((code) => [code.level, code.code, code.titles[locale] || ""]);
 }
 
-function csvCell(value: string | number): string {
-	const text = String(value);
-	return /[",\r\n]/.test(text) ? `"${text.replace(/"/g, '""')}"` : text;
-}
-
 function buildCsv(input: ExportInput): Blob {
 	const { columns } = input;
-	const lines = [
-		[columns.level, columns.code, columns.title].map(csvCell).join(","),
-		...toRows(input).map((row) => row.map(csvCell).join(",")),
-	];
-	// BOM so Excel detects UTF-8 on double-click.
-	return new Blob([`﻿${lines.join("\r\n")}`], {
-		type: "text/csv;charset=utf-8;",
-	});
+	const text = buildCsvText(
+		[columns.level, columns.code, columns.title],
+		toRows(input),
+	);
+	return new Blob([text], { type: "text/csv;charset=utf-8;" });
 }
 
 function buildJson({ codes }: ExportInput): Blob {

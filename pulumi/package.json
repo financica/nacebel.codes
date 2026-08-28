@@ -1,0 +1,20 @@
+{
+	"name": "nacebel-codes-pulumi",
+	"private": true,
+	"description": "Pulumi program for nacebel.codes: the Stripe dataset catalogue and the app-owned Vercel env.",
+	"scripts": {
+		"preview": "pulumi preview",
+		"up": "pulumi up",
+		"typecheck": "tsc --noEmit"
+	},
+	"dependencies": {
+		"@pulumi/pulumi": "^3.259.0",
+		"@pulumi/random": "^4.21.0",
+		"@pulumiverse/vercel": "5.4.1",
+		"pulumi-stripe": "^0.0.28"
+	},
+	"devDependencies": {
+		"@types/node": "^26.2.0",
+		"typescript": "^5.9.3"
+	}
+}

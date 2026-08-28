@@ -1,0 +1,25 @@
+{
+	"comment": [
+		"Standalone tsconfig for the Pulumi program (own package, own deps).",
+		"The app's build/type-check is unaffected: the root tsconfig excludes",
+		"pulumi/ and knip ignores it."
+	],
+	"compilerOptions": {
+		"target": "ES2020",
+		"module": "node16",
+		"moduleResolution": "node16",
+		"strict": true,
+		"esModuleInterop": true,
+		"skipLibCheck": true,
+		"noEmit": true
+	},
+	"ts-node": {
+		"transpileOnly": true
+	},
+	"include": [
+		"index.ts",
+		"stripe-catalogue.ts",
+		"vercel-env.ts",
+		"../lib/dataset/constants.ts"
+	]
+}

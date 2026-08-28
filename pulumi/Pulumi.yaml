@@ -1,0 +1,12 @@
+name: nacebel-codes
+runtime: nodejs
+description: >-
+  nacebel.codes — the Stripe catalogue for the paid full-dataset download
+  (product, price, webhook endpoint), declared from the app's own constants
+  (lib/dataset/constants.ts), plus the app-owned Vercel environment variables
+  (Stripe keys, webhook secret, download-token secret). DNS, email routing and
+  the Cloudflare email-sending token for this site live in the infra repo
+  (~/src/infra/stacks/websites.ts), which owns the zone and mints the token.
+  Stack `prod` provisions the live Stripe account and Vercel
+  production+preview; stack `dev` provisions the Stripe sandbox and Vercel
+  development (`vercel env pull` feeds .env.local).

@@ -7,5 +7,6 @@
 		"nsTypes": "off",
 		"enumMembers": "off",
 		"duplicates": "off"
-	}
+	},
+	"ignore": ["pulumi/**"]
 }

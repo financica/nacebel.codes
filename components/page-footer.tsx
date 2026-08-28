@@ -70,6 +70,12 @@ export function PageFooter() {
 						{t("API")}
 					</a>
 					<a
+						href={`/${locale}/dataset`}
+						className="transition-colors hover:text-foreground"
+					>
+						{t("Dataset")}
+					</a>
+					<a
 						href="mailto:contact@nacebel.codes"
 						className="font-medium text-foreground transition-colors hover:text-primary"
 					>

@@ -1,6 +1,8 @@
 "use client";
 
 import { useLocale } from "@/contexts/locale-context";
+import { DATASET_PRICE_EUR_CENTS, formatPriceEur } from "@/lib/dataset/constants";
+import { useDatasetPurchase } from "@/lib/dataset/purchase-store";
 import { EXPORT_FORMAT_LABELS, type ExportFormat, exportCodes } from "@/lib/export";
 import { toast } from "sonner";
 import { useT } from "@/lib/i18n";
@@ -10,6 +12,7 @@ import type { NacebelCode } from "@/types";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
+import { BuyDatasetDialog } from "./dataset/buy-dataset-dialog";
 import { ExportMenu } from "./export-menu";
 import { NacebelCodeList } from "./nacebel-code-list";
 import { PageFooter } from "./page-footer";
@@ -136,6 +139,11 @@ export default function NacebelSearchClient({
 	const [searchTerm, setSearchTerm] = useState(() => searchParams.get("q") ?? "");
 	const [copiedCode, setCopiedCode] = useState<string | null>(null);
 	const [currentPage, setCurrentPage] = useState(1);
+	const purchase = useDatasetPurchase();
+	const [checkoutOpen, setCheckoutOpen] = useState(false);
+	// The format the buyer asked for before being sent to checkout; runs the
+	// moment payment lands so the click still "just exports".
+	const pendingFormatRef = useRef<ExportFormat | null>(null);
 	const searchInputRef = useRef<HTMLInputElement>(null);
 	const isFirstUrlSync = useRef(true);
 
@@ -245,7 +253,7 @@ export default function NacebelSearchClient({
 		[locale],
 	);
 
-	const handleExport = useCallback(
+	const runExport = useCallback(
 		(format: ExportFormat) => {
 			exportCodes(format, {
 				codes: filteredCodes,
@@ -266,6 +274,27 @@ export default function NacebelSearchClient({
 		},
 		[filteredCodes, locale, t],
 	);
+
+	// Export is the paid feature: a browser that has bought the dataset exports
+	// on the spot; any other click opens checkout in place, and the export it
+	// asked for runs as soon as payment is confirmed.
+	const handleExport = useCallback(
+		(format: ExportFormat) => {
+			if (purchase) {
+				runExport(format);
+				return;
+			}
+			pendingFormatRef.current = format;
+			setCheckoutOpen(true);
+		},
+		[purchase, runExport],
+	);
+
+	const handlePurchased = useCallback(() => {
+		const format = pendingFormatRef.current;
+		pendingFormatRef.current = null;
+		if (format) runExport(format);
+	}, [runExport]);
 
 	if (initialCodes.length === 0) {
 		return (
@@ -343,9 +372,31 @@ export default function NacebelSearchClient({
 					</div>
 					<ExportMenu
 						label={t("Export")}
+						locked={
+							purchase
+								? undefined
+								: {
+										label: t("Unlock exports · {price}", {
+											price: formatPriceEur(
+												DATASET_PRICE_EUR_CENTS,
+												locale,
+											),
+										}),
+										onUnlock: () => setCheckoutOpen(true),
+									}
+						}
 						disabled={filteredCodes.length === 0}
 						onExport={handleExport}
 						className="shrink-0 self-start sm:self-auto"
+					/>
+					<BuyDatasetDialog
+						open={checkoutOpen}
+						onOpenChange={setCheckoutOpen}
+						onPurchased={handlePurchased}
+						intro={t(
+							"One payment unlocks exporting your results and the full dataset — CSV, JSON and Excel, {price} excl. VAT.",
+							{ price: formatPriceEur(DATASET_PRICE_EUR_CENTS, locale) },
+						)}
 					/>
 				</div>
 

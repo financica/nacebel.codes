@@ -1,0 +1,6 @@
+encryptionsalt: v1:moTdfIS8tds=:v1:ILkMDDOMaM08HPYM:NlUfK+33f3Ob/5UCjQYSlPA2FwOhzw==
+config:
+  nacebel-codes:stripeSecretKey:
+    secure: v1:Jtk/+hmZCLS1GPlC:S/5LxB/b4uutmTvUG+Y27J/x5CfGGo2KmZYF99kBk1pbvw6oOP77/gKCW4lQxO4PHwAEUpdmNG0xZz4BS5+CINE8j4vjEBFo5Stlbz6xQVH9Ruyx+BIue3SmiveSXWW5Oq6AAor+qAclpco1BAbJCACk3bz9mhOzsaS5
+  nacebel-codes:stripePublishableKey: pk_test_51Q2gp8CiVSS0OKre9VdskYUSxHrZUYnNN5MmKV4eHBwVxy8GJil9YkpDnYelvkOS5hv1faybiLPasiYqVlPKnr8P00G5uQ1uv2
+  nacebel-codes:appUrl: http://localhost:3000
