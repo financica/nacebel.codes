@@ -364,6 +364,7 @@ export default async function ApiDocsPage({ params }: PageProps) {
 							</p>
 							<div className="flex flex-wrap gap-3">
 								<Button
+									nativeButton={false}
 									render={
 										<a href="mailto:contact@nacebel.codes?subject=NACE-BEL%20API">
 											{t("Contact us")}
@@ -372,6 +373,7 @@ export default async function ApiDocsPage({ params }: PageProps) {
 								/>
 								<Button
 									variant="outline"
+									nativeButton={false}
 									render={
 										<a href={`/${locale}`}>
 											{t("Try the search UI")}

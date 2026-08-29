@@ -108,6 +108,7 @@ export function NacebelCodeDetail({
 						<Button
 							variant="outline"
 							size="sm"
+							nativeButton={false}
 							render={
 								<a href={`/${locale}`}>
 									<ArrowLeftIcon className="mr-1.5 h-4 w-4" />
@@ -118,6 +119,7 @@ export function NacebelCodeDetail({
 						<Button
 							variant="outline"
 							size="sm"
+							nativeButton={false}
 							render={
 								<a
 									href={kboLink}
