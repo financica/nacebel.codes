@@ -2,7 +2,6 @@ import { dataset } from "@ingram-tech/nk-seo";
 import { JsonLd } from "@ingram-tech/nk-seo/components";
 import { CheckIcon } from "lucide-react";
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
 
 import { BuyDatasetButton } from "@/components/dataset/buy-dataset-button";
 import { ResendLinksForm } from "@/components/dataset/resend-links-form";
@@ -13,46 +12,27 @@ import {
 	formatPriceEur,
 } from "@/lib/dataset/constants";
 import { createT, defineMessages } from "@/lib/i18n/core";
-import { hreflangLanguages, SITE_ORIGIN } from "@/lib/i18n/hreflang";
-import { type Locale, SUPPORTED_LOCALES } from "@/lib/i18n/locales";
+import { getUrlLocale, resolveLocale } from "@/lib/i18n/locale";
+import { OG_LOCALE } from "@/lib/i18n/locales";
+import { canonicalUrl } from "@/lib/i18n/routing";
 import { siteScope } from "@/lib/i18n/scopes/site";
-import { ogImagesFor } from "@/lib/site-metadata";
-
-interface PageProps {
-	params: Promise<{ locale: string }>;
-}
-
-function isLocale(value: string): value is Locale {
-	return (SUPPORTED_LOCALES as readonly string[]).includes(value);
-}
-
-const datasetPathFor = (loc: Locale) => `/${loc}/dataset`;
+import { ogImagesFor, pageMetadata } from "@/lib/site-metadata";
 
 const pageDescription =
 	"Every NACE-BEL 2025 code with its explanatory note, in four languages, as CSV, JSON and Excel. One row per code.";
 
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-	const { locale } = await params;
-	if (!isLocale(locale)) return {};
+export async function generateMetadata(): Promise<Metadata> {
+	const [locale, urlLocale] = await Promise.all([resolveLocale(), getUrlLocale()]);
 	const t = createT(locale, siteScope);
-	const title = t("Download the full NACE-BEL 2025 dataset");
-	const description = t(pageDescription);
-	return {
-		title,
-		description,
-		alternates: {
-			canonical: datasetPathFor(locale),
-			languages: hreflangLanguages(datasetPathFor),
-		},
-		openGraph: {
-			title,
-			description,
-			url: `${SITE_ORIGIN}${datasetPathFor(locale)}`,
-			type: "website",
-			images: ogImagesFor(locale),
-		},
-		twitter: { card: "summary_large_image", title, description },
-	};
+
+	return pageMetadata({
+		title: t("Download the full NACE-BEL 2025 dataset"),
+		description: t(pageDescription),
+		path: "/dataset",
+		urlLocale,
+		locale: OG_LOCALE[locale],
+		openGraph: { images: ogImagesFor(locale) },
+	});
 }
 
 const included = defineMessages([
@@ -75,12 +55,11 @@ const faq = defineMessages([
 	},
 ] as const);
 
-export default async function DatasetPage({ params }: PageProps) {
-	const { locale } = await params;
-	if (!isLocale(locale)) notFound();
+export default async function DatasetPage() {
+	const [locale, urlLocale] = await Promise.all([resolveLocale(), getUrlLocale()]);
 	const t = createT(locale, siteScope);
 	const price = formatPriceEur(DATASET_PRICE_EUR_CENTS, locale);
-	const url = `${SITE_ORIGIN}${datasetPathFor(locale)}`;
+	const url = canonicalUrl("/dataset", urlLocale);
 
 	const datasetJsonLd = dataset({
 		name: DATASET_PRODUCT_NAME,

@@ -1,64 +1,47 @@
 import { PageFooter } from "@/components/page-footer";
 import { Button } from "@/components/ui/button";
 import { createT, defineMessages, type Translator } from "@/lib/i18n/core";
-import { hreflangLanguages, SITE_ORIGIN } from "@/lib/i18n/hreflang";
-import { HTML_LANG, SUPPORTED_LOCALES, type Locale } from "@/lib/i18n/locales";
+import { getUrlLocale, resolveLocale } from "@/lib/i18n/locale";
+import { HTML_LANG, type Locale, OG_LOCALE } from "@/lib/i18n/locales";
+import { canonicalUrl } from "@/lib/i18n/routing";
 import { siteScope } from "@/lib/i18n/scopes/site";
-import { ogImagesFor } from "@/lib/site-metadata";
+import { ogImagesFor, pageMetadata } from "@/lib/site-metadata";
 import { article, breadcrumbList } from "@ingram-tech/nk-seo";
 import { JsonLd } from "@ingram-tech/nk-seo/components";
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
-
-interface PageProps {
-	params: Promise<{ locale: string }>;
-}
-
-function isLocale(value: string): value is Locale {
-	return (SUPPORTED_LOCALES as readonly string[]).includes(value);
-}
 
 const aboutDescription =
 	"Learn how NACE and NACE-BEL classify economic activities in Belgium and across Europe — the hierarchy, the 2003/2008/2025 versions, and where the codes are used.";
 
-const aboutPathFor = (loc: Locale) => `/${loc}/about`;
-
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-	const { locale } = await params;
-	if (!isLocale(locale)) return {};
-
+export async function generateMetadata(): Promise<Metadata> {
+	const [locale, urlLocale] = await Promise.all([resolveLocale(), getUrlLocale()]);
 	const t = createT(locale, siteScope);
-	const title = t("About NACE-BEL Codes");
-	const description = t(aboutDescription);
 
-	return {
-		title,
-		description,
-		alternates: {
-			canonical: aboutPathFor(locale),
-			languages: hreflangLanguages(aboutPathFor),
-		},
-		openGraph: {
-			title,
-			description,
-			url: `${SITE_ORIGIN}${aboutPathFor(locale)}`,
-			type: "article",
-			images: ogImagesFor(locale),
-		},
-		twitter: {
-			card: "summary",
-			title,
-			description,
-		},
-	};
+	return pageMetadata({
+		title: t("About NACE-BEL Codes"),
+		description: t(aboutDescription),
+		path: "/about",
+		urlLocale,
+		locale: OG_LOCALE[locale],
+		type: "article",
+		openGraph: { images: ogImagesFor(locale) },
+		twitter: { card: "summary" },
+	});
 }
 
-function buildJsonLd(locale: Locale, t: Translator<typeof siteScope>) {
-	const url = `${SITE_ORIGIN}${aboutPathFor(locale)}`;
+function buildJsonLd(
+	locale: Locale,
+	urlLocale: Locale | undefined,
+	t: Translator<typeof siteScope>,
+) {
+	// Both URLs follow the address the visitor is on, not the language that
+	// rendered it: on `/fr/about` they are the French addresses, on the bare
+	// negotiating path they are the bare ones.
+	const url = canonicalUrl("/about", urlLocale);
 	const title = t("About NACE-BEL Codes");
 
 	const breadcrumbJsonLd = breadcrumbList([
-		{ name: t("NACE-BEL 2025 Codes"), url: `${SITE_ORIGIN}/${locale}` },
+		{ name: t("NACE-BEL 2025 Codes"), url: canonicalUrl("/", urlLocale) },
 		{ name: title, url },
 	]);
 
@@ -152,11 +135,10 @@ const applications = defineMessages([
 	},
 ] as const);
 
-export default async function AboutPage({ params }: PageProps) {
-	const { locale } = await params;
-	if (!isLocale(locale)) notFound();
+export default async function AboutPage() {
+	const [locale, urlLocale] = await Promise.all([resolveLocale(), getUrlLocale()]);
 	const t = createT(locale, siteScope);
-	const { breadcrumbJsonLd, articleJsonLd } = buildJsonLd(locale, t);
+	const { breadcrumbJsonLd, articleJsonLd } = buildJsonLd(locale, urlLocale, t);
 
 	return (
 		<div className="bg-background text-foreground">

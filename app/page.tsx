@@ -1,53 +1,35 @@
 import NacebelSearchClient from "@/components/nacebel-search";
 import { createT } from "@/lib/i18n/core";
-import { hreflangLanguages, SITE_ORIGIN } from "@/lib/i18n/hreflang";
-import { SUPPORTED_LOCALES, type Locale } from "@/lib/i18n/locales";
+import { getUrlLocale, resolveLocale } from "@/lib/i18n/locale";
+import { OG_LOCALE } from "@/lib/i18n/locales";
+import { SITE_ORIGIN } from "@/lib/i18n/routing";
 import { siteScope } from "@/lib/i18n/scopes/site";
 import { getPaginatedNacebelCodes } from "@/lib/nacebelData";
+import { ogImagesFor, pageMetadata } from "@/lib/site-metadata";
 import { dataset, website } from "@ingram-tech/nk-seo";
 import { JsonLd } from "@ingram-tech/nk-seo/components";
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
-interface PageProps {
-	params: Promise<{ locale: string }>;
-}
-
-function isLocale(value: string): value is Locale {
-	return (SUPPORTED_LOCALES as readonly string[]).includes(value);
-}
-
-const homePathFor = (loc: Locale) => `/${loc}`;
-
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-	const { locale } = await params;
-	if (!isLocale(locale)) return {};
-
+export async function generateMetadata(): Promise<Metadata> {
+	const [locale, urlLocale] = await Promise.all([resolveLocale(), getUrlLocale()]);
 	const t = createT(locale, siteScope);
 	const metaTitle = t("NACE-BEL 2025 Codes — Search the Belgian classification");
-	const metaDescription = t(
-		"Search the full NACE-BEL 2025 classification of Belgian economic activity codes in Dutch, French, English, and German. Browse the directory, copy codes, or use the free public API.",
-	);
 
 	return {
+		...pageMetadata({
+			title: metaTitle,
+			description: t(
+				"Search the full NACE-BEL 2025 classification of Belgian economic activity codes in Dutch, French, English, and German. Browse the directory, copy codes, or use the free public API.",
+			),
+			path: "/",
+			urlLocale,
+			locale: OG_LOCALE[locale],
+			openGraph: { images: ogImagesFor(locale) },
+		}),
+		// The home page's title is the whole sentence; the "| NACE-BEL 2025 Codes"
+		// template would repeat the site name it already ends with.
 		title: { absolute: metaTitle },
-		description: metaDescription,
-		alternates: {
-			canonical: homePathFor(locale),
-			languages: hreflangLanguages(homePathFor),
-		},
-		openGraph: {
-			title: metaTitle,
-			description: metaDescription,
-			url: `${SITE_ORIGIN}${homePathFor(locale)}`,
-			type: "website",
-		},
-		twitter: {
-			card: "summary_large_image",
-			title: metaTitle,
-			description: metaDescription,
-		},
 	};
 }
 
@@ -82,7 +64,7 @@ const datasetJsonLd = dataset({
 	inLanguage: ["nl", "fr", "en", "de"],
 	keywords: ["NACE-BEL", "NACE", "economic activity", "Belgium", "classification"],
 	isAccessibleForFree: true,
-	license: `${SITE_ORIGIN}/en/about`,
+	license: `${SITE_ORIGIN}/about`,
 	creator: publisher,
 	distribution: [
 		{
@@ -93,10 +75,7 @@ const datasetJsonLd = dataset({
 	extra: { alternateName: ["NACE-BEL 2025", "NACEBEL 2025"] },
 });
 
-export default async function Home({ params }: PageProps) {
-	const { locale } = await params;
-	if (!isLocale(locale)) notFound();
-
+export default async function Home() {
 	const { data: initialCodes } = await getPaginatedNacebelCodes(1, 100000);
 
 	return (

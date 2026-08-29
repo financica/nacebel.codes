@@ -1,4 +1,4 @@
-import { SITE_ORIGIN } from "@/lib/i18n/hreflang";
+import { SITE_ORIGIN } from "@/lib/i18n/routing";
 
 import { DATASET_FORMATS, type DatasetFormat } from "./constants";
 import { mintDownloadToken } from "./token";

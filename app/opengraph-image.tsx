@@ -1,5 +1,5 @@
 import { createT } from "@/lib/i18n/core";
-import { SUPPORTED_LOCALES, type Locale } from "@/lib/i18n/locales";
+import { resolveLocale } from "@/lib/i18n/locale";
 import { siteScope } from "@/lib/i18n/scopes/site";
 import { ogImageResponse } from "@ingram-tech/nk-seo/og";
 
@@ -7,20 +7,15 @@ export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 export const alt = "NACE-BEL 2025 Codes — search the Belgian classification";
 
-// The card lives under [locale] rather than at the app root for two reasons:
-// its URL then carries a locale prefix, so the proxy serves it instead of
-// redirecting it to one; and the share card is localized like the page it
-// belongs to. Both strings are already in the site catalog.
+// The card is localized like the page it belongs to, and every page advertises
+// it at a locale-named address (`/fr/opengraph-image`) that the proxy rewrites
+// here — so the locale arrives the same way it does on a page, in the header
+// the proxy set, and a crawler fetching the French card gets the French card.
 //
 // Colours are the light theme's primary/background/foreground, converted from
 // the oklch values in globals.css — Satori resolves no CSS variables.
-export default async function OpengraphImage({
-	params,
-}: {
-	params: Promise<{ locale: Locale }>;
-}) {
-	const { locale } = await params;
-	const t = createT(locale, siteScope);
+export default async function OpengraphImage() {
+	const t = createT(await resolveLocale(), siteScope);
 
 	return ogImageResponse({
 		title: t("NACE-BEL 2025 Codes — Search the Belgian classification"),
@@ -36,8 +31,4 @@ export default async function OpengraphImage({
 		ink: "#f9fafc",
 		size,
 	});
-}
-
-export function generateStaticParams(): { locale: string }[] {
-	return SUPPORTED_LOCALES.map((locale) => ({ locale }));
 }

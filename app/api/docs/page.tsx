@@ -3,64 +3,44 @@ import { PageFooter } from "@/components/page-footer";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { createT, defineMessages, type Translator } from "@/lib/i18n/core";
-import { hreflangLanguages, SITE_ORIGIN } from "@/lib/i18n/hreflang";
-import { HTML_LANG, SUPPORTED_LOCALES, type Locale } from "@/lib/i18n/locales";
+import { getUrlLocale, resolveLocale } from "@/lib/i18n/locale";
+import { HTML_LANG, type Locale, OG_LOCALE } from "@/lib/i18n/locales";
+import { canonicalUrl, SITE_ORIGIN } from "@/lib/i18n/routing";
 import { siteScope } from "@/lib/i18n/scopes/site";
-import { ogImagesFor } from "@/lib/site-metadata";
+import { ogImagesFor, pageMetadata } from "@/lib/site-metadata";
 import { article, breadcrumbList } from "@ingram-tech/nk-seo";
 import { JsonLd } from "@ingram-tech/nk-seo/components";
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
-
-interface PageProps {
-	params: Promise<{ locale: string }>;
-}
-
-function isLocale(value: string): value is Locale {
-	return (SUPPORTED_LOCALES as readonly string[]).includes(value);
-}
 
 const apiDescription =
 	"Free public REST API for the NACE-BEL 2025 classification system. List, search, and look up Belgian economic activity codes in JSON across four languages.";
 
-const apiDocsPathFor = (loc: Locale) => `/${loc}/api/docs`;
-
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-	const { locale } = await params;
-	if (!isLocale(locale)) return {};
-
+export async function generateMetadata(): Promise<Metadata> {
+	const [locale, urlLocale] = await Promise.all([resolveLocale(), getUrlLocale()]);
 	const t = createT(locale, siteScope);
-	const title = t("NACE-BEL 2025 API Documentation");
-	const description = t(apiDescription);
 
-	return {
-		title,
-		description,
-		alternates: {
-			canonical: apiDocsPathFor(locale),
-			languages: hreflangLanguages(apiDocsPathFor),
-		},
-		openGraph: {
-			title,
-			description,
-			url: `${SITE_ORIGIN}${apiDocsPathFor(locale)}`,
-			type: "article",
-			images: ogImagesFor(locale),
-		},
-		twitter: {
-			card: "summary",
-			title,
-			description,
-		},
-	};
+	return pageMetadata({
+		title: t("NACE-BEL 2025 API Documentation"),
+		description: t(apiDescription),
+		path: "/api/docs",
+		urlLocale,
+		locale: OG_LOCALE[locale],
+		type: "article",
+		openGraph: { images: ogImagesFor(locale) },
+		twitter: { card: "summary" },
+	});
 }
 
-function buildJsonLd(locale: Locale, t: Translator<typeof siteScope>) {
-	const url = `${SITE_ORIGIN}${apiDocsPathFor(locale)}`;
+function buildJsonLd(
+	locale: Locale,
+	urlLocale: Locale | undefined,
+	t: Translator<typeof siteScope>,
+) {
+	const url = canonicalUrl("/api/docs", urlLocale);
 	const title = t("NACE-BEL 2025 API Documentation");
 
 	const breadcrumbJsonLd = breadcrumbList([
-		{ name: t("NACE-BEL 2025 Codes"), url: `${SITE_ORIGIN}/${locale}` },
+		{ name: t("NACE-BEL 2025 Codes"), url: canonicalUrl("/", urlLocale) },
 		{ name: title, url },
 	]);
 
@@ -167,11 +147,10 @@ const endpointCards = defineMessages([
 	},
 ] as const);
 
-export default async function ApiDocsPage({ params }: PageProps) {
-	const { locale } = await params;
-	if (!isLocale(locale)) notFound();
+export default async function ApiDocsPage() {
+	const [locale, urlLocale] = await Promise.all([resolveLocale(), getUrlLocale()]);
 	const t = createT(locale, siteScope);
-	const { breadcrumbJsonLd, apiJsonLd } = buildJsonLd(locale, t);
+	const { breadcrumbJsonLd, apiJsonLd } = buildJsonLd(locale, urlLocale, t);
 
 	return (
 		<div className="bg-background text-foreground">

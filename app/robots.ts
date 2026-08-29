@@ -1,4 +1,4 @@
-import { SITE_ORIGIN } from "@/lib/i18n/hreflang";
+import { SITE_ORIGIN } from "@/lib/i18n/routing";
 import { createRobots } from "@ingram-tech/nk-seo";
 import type { MetadataRoute } from "next";
 
