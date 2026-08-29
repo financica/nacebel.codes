@@ -334,6 +334,7 @@ export default async function AboutPage({ params }: PageProps) {
 							</p>
 							<div className="flex flex-wrap gap-3">
 								<Button
+									nativeButton={false}
 									render={
 										<a href={`/${locale}`}>
 											{t("Start searching")}
@@ -342,6 +343,7 @@ export default async function AboutPage({ params }: PageProps) {
 								/>
 								<Button
 									variant="outline"
+									nativeButton={false}
 									render={
 										<a href="mailto:contact@nacebel.codes">
 											{t("Contact us")}

@@ -71,6 +71,7 @@ export function LanguageSwitcher() {
 						key={loc}
 						data-current={loc === locale ? "" : undefined}
 						className="data-current:font-medium data-current:text-primary"
+						nativeButton={false}
 						render={<a href={hrefFor(loc)}>{LOCALE_NAMES[loc]}</a>}
 					/>
 				))}
