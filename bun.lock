@@ -7,9 +7,9 @@
       "dependencies": {
         "@base-ui/react": "^1.7.0",
         "@financica/nace-codes": "^3.1.0",
-        "@ingram-tech/bot-protection": "^0.4.2",
         "@ingram-tech/nk-billing": "^0.3.5",
         "@ingram-tech/nk-email": "^0.6.1",
+        "@ingram-tech/nk-forms": "^0.3.0",
         "@ingram-tech/nk-i18n": "^0.3.4",
         "@ingram-tech/nk-seo": "^0.7.0",
         "@ingram-tech/nk-themes": "^0.2.2",
@@ -194,13 +194,13 @@
 
     "@img/sharp-win32-x64": ["@img/sharp-win32-x64@0.35.3", "", { "os": "win32", "cpu": "x64" }, "sha512-D4y1vNeZrIIJCN+uHaWVtH86B+aCrdMYYjicy9pXHvbGZeGYLLSd3wdVuC37FxVXlU1ARsk84eKWfWMXGYEqvA=="],
 
-    "@ingram-tech/bot-protection": ["@ingram-tech/bot-protection@0.4.2", "", { "peerDependencies": { "botid": ">=1.0.0", "react": "^18.0.0 || ^19.0.0" }, "optionalPeers": ["botid", "react"] }, "sha512-TqRzt7iCbtGu2sAy4JiEriFgOevTVebTaYJ/+oVavoxZQ244IPNwzCT/4Rayyz4b8sGiiKZH707OSuZOUH1dXA=="],
-
     "@ingram-tech/nk-billing": ["@ingram-tech/nk-billing@0.3.5", "", { "dependencies": { "stripe": "^22.5.0", "zod": "^4.4.3" } }, "sha512-+o5eaTaHIjjybWe1bcTGNvxoaWczxXhBtsAVUsLn28xkQXK6b3q/dk8+aETYxuA5l2ZrhhCggVp9KKtu60Mizg=="],
 
     "@ingram-tech/nk-dev": ["@ingram-tech/nk-dev@0.13.0", "", { "dependencies": { "@ast-grep/cli": "^0.45.1", "@testing-library/dom": "^10.4.1", "@testing-library/jest-dom": "^7.0.1", "@typescript/native": "npm:typescript@^7.0.2", "jsdom": "^30.0.1", "knip": "^6.32.2", "oxfmt": "^0.63.0", "oxlint": "^1.78.0", "typescript": "npm:@typescript/typescript6@^6.0.2", "vitest": "^4.1.10" }, "bin": { "nk": "bin/nk.js", "nextkit-format-staged": "bin/format-staged.mjs" } }, "sha512-PlrdslRjHdo23B1y82ReenxJvTn6eg+j1RaNzYHDC6WMiDanFLd4CmJvJtBJ0XjDFLAn/Q/HQGZD5LXij6WMuA=="],
 
     "@ingram-tech/nk-email": ["@ingram-tech/nk-email@0.6.1", "", {}, "sha512-y6VAJiVGD5OD5K+3/WDd7nbV8MsBiuc+WISvowIdzsPOLsGlEvJwClpL1wckWZKZy5Qpczx+mzYi2E1Ad8+jhQ=="],
+
+    "@ingram-tech/nk-forms": ["@ingram-tech/nk-forms@0.3.0", "", { "dependencies": { "@ingram-tech/nk-email": "0.6.1" }, "peerDependencies": { "botid": ">=1.0.0", "react": "^18.0.0 || ^19.0.0" }, "optionalPeers": ["botid", "react"] }, "sha512-uXamjQoMMHwAjWzBNWc6L5rGUTiv8fylX7aHKtqcbQwC4qGua+o4EtqqvefUiMOV7XACYrzcl1muP8H3BDdTSg=="],
 
     "@ingram-tech/nk-i18n": ["@ingram-tech/nk-i18n@0.3.4", "", { "dependencies": { "intl-messageformat": "^11.2.14" }, "peerDependencies": { "react": "^18.0.0 || ^19.0.0" }, "optionalPeers": ["react"] }, "sha512-kAVlHzy+OmXYwI6sOPj5d4L117o24EreDevhjMwPw64Yr23fuqIh0SBYR+yd0t6/rL6d61aAMlmbdM1gwQhUWQ=="],
 

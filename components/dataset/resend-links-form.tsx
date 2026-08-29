@@ -1,6 +1,6 @@
 "use client";
 
-import { HoneypotInput, useBotProtection } from "@ingram-tech/bot-protection/react";
+import { HoneypotInput, useBotProtection } from "@ingram-tech/nk-forms/react";
 import { type FormEvent, useState } from "react";
 
 import { Button } from "@/components/ui/button";
