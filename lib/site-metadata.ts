@@ -1,11 +1,25 @@
-import { ogImageMetadata } from "@ingram-tech/nk-seo";
+import { createMetadata, ogImageMetadata } from "@ingram-tech/nk-seo";
 import type { Metadata, Viewport } from "next";
 import { createT } from "@/lib/i18n/core";
-import { SITE_ORIGIN } from "@/lib/i18n/hreflang";
 import { type Locale, OG_LOCALE } from "@/lib/i18n/locales";
+import { routing, SITE_ORIGIN } from "@/lib/i18n/routing";
 import { siteScope } from "@/lib/i18n/scopes/site";
 
 const siteName = "NACE-BEL 2025 Codes";
+
+/**
+ * The page-metadata factory. Handing it `routing` is what makes every page emit
+ * the whole locale cluster — one `alternates.languages` entry per locale plus
+ * the bare `x-default` — and a canonical that follows the address rather than
+ * the language that rendered. One config, so what the site advertises and what
+ * it serves are the same strings by construction.
+ */
+export const pageMetadata = createMetadata({
+	baseUrl: SITE_ORIGIN,
+	siteName,
+	titleTemplate: "%s | NACE-BEL 2025 Codes",
+	hreflang: routing,
+});
 
 /**
  * The locale's share card, from `app/[locale]/opengraph-image.tsx`.
