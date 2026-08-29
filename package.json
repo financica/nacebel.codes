@@ -20,7 +20,7 @@
 		"@ingram-tech/nk-email": "^0.6.1",
 		"@ingram-tech/nk-forms": "^0.3.0",
 		"@ingram-tech/nk-i18n": "^0.5.1",
-		"@ingram-tech/nk-seo": "^0.7.0",
+		"@ingram-tech/nk-seo": "^0.10.0",
 		"@ingram-tech/nk-themes": "^0.2.2",
 		"@stripe/react-stripe-js": "^6.8.2",
 		"@stripe/stripe-js": "^9.14.0",
