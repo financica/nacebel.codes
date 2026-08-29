@@ -22,13 +22,13 @@ export const pageMetadata = createMetadata({
 });
 
 /**
- * The locale's share card, from `app/[locale]/opengraph-image.tsx`.
+ * The locale's share card, from `app/opengraph-image.tsx`.
  *
- * Next attaches that file automatically only to the segment that declares it —
- * `/[locale]`, i.e. the home page. Every deeper page returns its own
- * `openGraph` object from `generateMetadata`, and sibling metadata objects are
- * replaced rather than merged, which drops the inherited image. So each page
- * spreads this in explicitly and they all advertise the same card.
+ * Next attaches that file automatically only to the segment that declares it,
+ * and a page returning its own `openGraph` object replaces the inherited one
+ * rather than merging into it — so every page names the card explicitly. The
+ * address it names carries a locale prefix, which the proxy rewrites onto the
+ * bare image route, so a crawler fetching the French card gets the French card.
  */
 export function ogImagesFor(locale: Locale) {
 	const t = createT(locale, siteScope);
@@ -39,7 +39,7 @@ export function ogImagesFor(locale: Locale) {
 	});
 }
 
-/** Base site metadata, shared by both root layouts (locale-parameterised). */
+/** Base site metadata for the root layout, in the resolved locale. */
 export function buildRootMetadata(locale: Locale): Metadata {
 	const t = createT(locale, siteScope);
 	const description = t(

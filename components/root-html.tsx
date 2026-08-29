@@ -5,9 +5,8 @@ import { archivo, jetbrainsMono } from "@/lib/fonts";
 import { HTML_LANG, type Locale } from "@/lib/i18n/locales";
 
 /**
- * The `<html>`/`<body>` document shell, shared by both root layouts. The only
- * difference between them is where `locale` comes from — the URL param (static
- * `[locale]` tree) or request negotiation (dynamic `(site)` tree).
+ * The `<html>`/`<body>` document shell. `locale` is whatever the root layout
+ * resolved — the one the URL named, or the negotiated one on the bare path.
  */
 export function RootHtml({
 	locale,

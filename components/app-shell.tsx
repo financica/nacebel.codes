@@ -8,10 +8,8 @@ import type { Locale } from "@/lib/i18n/locales";
 import { siteScope } from "@/lib/i18n/scopes/site";
 
 /**
- * The shared page chrome (locale context, header, promo banner, toaster) that
- * both root layouts render around their content. Kept locale-agnostic beyond
- * the `locale` prop so the static `[locale]` layout can pass the URL locale and
- * the dynamic `(site)` layout can pass the negotiated one.
+ * The shared page chrome (locale context, header, promo banner, toaster) the
+ * root layout renders around every page.
  */
 export function AppShell({
 	locale,
