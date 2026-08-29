@@ -42,6 +42,9 @@ export function LanguageSwitcher() {
 				}
 			}
 		}
+		// The alternate links are the external system this effect reads: they are
+		// unreachable during render (SSR has no DOM), so the read lands in state.
+		// oxlint-disable-next-line react/set-state-in-effect -- mount-time DOM read
 		setAltHrefs(next);
 	}, []);
 

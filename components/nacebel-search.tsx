@@ -167,9 +167,14 @@ export default function NacebelSearchClient({
 		[initialCodes, searchTerm],
 	);
 
-	useEffect(() => {
+	// Reset pagination when the query changes. Adjusting during render (React's
+	// documented pattern) rather than in an effect keeps the first paint of a new
+	// query on page 1 instead of re-rendering the old page and then correcting it.
+	const [pagedSearchTerm, setPagedSearchTerm] = useState(searchTerm);
+	if (pagedSearchTerm !== searchTerm) {
+		setPagedSearchTerm(searchTerm);
 		setCurrentPage(1);
-	}, [searchTerm]);
+	}
 
 	useEffect(() => {
 		const handleKeyDown = (event: KeyboardEvent) => {
