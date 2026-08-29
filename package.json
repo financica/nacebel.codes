@@ -9,6 +9,7 @@
 		"start": "next start",
 		"format": "nk format",
 		"check": "nk check",
+		"ci": "nk check && nk type-check",
 		"type-check": "nk type-check",
 		"prepare": "git config core.hooksPath .githooks || true"
 	},
