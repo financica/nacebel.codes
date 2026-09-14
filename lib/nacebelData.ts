@@ -110,6 +110,8 @@ function mapToPublicNacebelCode(
 	return publicCode;
 }
 
+let sectionByDivision: Map<string, string | undefined> | null = null;
+
 /**
  * Sort key that groups every code under its top-level section (`A`–`U`) and
  * places the section header before its divisions. The `parent` field is only
@@ -118,9 +120,22 @@ function mapToPublicNacebelCode(
  */
 function sectionSortKey(code: NACEBELCode): string {
 	if (code.level === 1) return `${code.code}|`;
-	const division = getNacebelInstance().getCode(code.code.slice(0, 2));
-	const section = division?.parent ?? "~"; // unknown → sort last
+	// `getCode` costs ~0.4 ms a call, so resolve divisions from a map built once.
+	sectionByDivision ??= new Map(
+		getNacebelInstance()
+			.getAllCodes(2)
+			.map((division) => [division.code, division.parent]),
+	);
+	const section = sectionByDivision.get(code.code.slice(0, 2)) ?? "~"; // unknown → sort last
 	return `${section}|${code.code}`;
+}
+
+/** Sort codes by {@link sectionSortKey}, computing each key once. */
+function sortBySection(codes: NACEBELCode[]): NACEBELCode[] {
+	return codes
+		.map((code) => ({ code, key: sectionSortKey(code) }))
+		.sort((a, b) => (a.key < b.key ? -1 : a.key > b.key ? 1 : 0))
+		.map(({ code }) => code);
 }
 
 export async function getPaginatedNacebelCodes(
@@ -131,14 +146,9 @@ export async function getPaginatedNacebelCodes(
 	const nacebel = getNacebelInstance();
 	const effectiveMinLevel = minLevel && minLevel > 1 ? minLevel : 1;
 
-	const allCodes = nacebel
-		.getAllCodes()
-		.filter((code) => code.level >= effectiveMinLevel)
-		.sort((a, b) => {
-			const ka = sectionSortKey(a);
-			const kb = sectionSortKey(b);
-			return ka < kb ? -1 : ka > kb ? 1 : 0;
-		});
+	const allCodes = sortBySection(
+		nacebel.getAllCodes().filter((code) => code.level >= effectiveMinLevel),
+	);
 
 	const totalItems = allCodes.length;
 	const totalPages = Math.ceil(totalItems / limit);
@@ -239,36 +249,29 @@ export interface DatasetRecord {
  */
 export function getFullDataset(): DatasetRecord[] {
 	const nacebel = getNacebelInstance();
-	return nacebel
-		.getAllCodes()
-		.sort((a, b) => {
-			const ka = sectionSortKey(a);
-			const kb = sectionSortKey(b);
-			return ka < kb ? -1 : ka > kb ? 1 : 0;
-		})
-		.map((code) => {
-			const {
-				level,
-				code: displayCode,
-				titles,
-				description,
-				explanatoryNote,
-			} = mapToPublicNacebelCode(code, false);
-			// `parent` is only populated for levels 1–4 in the source; deeper
-			// levels nest by code prefix.
-			const parent =
-				code.level === 1
-					? undefined
-					: code.level === 2
-						? code.parent
-						: formatCodeForDisplay(code.code.slice(0, -1));
-			return {
-				level,
-				code: displayCode,
-				...(parent ? { parent } : {}),
-				titles,
-				description,
-				...(explanatoryNote ? { explanatoryNote } : {}),
-			};
-		});
+	return sortBySection(nacebel.getAllCodes()).map((code) => {
+		const {
+			level,
+			code: displayCode,
+			titles,
+			description,
+			explanatoryNote,
+		} = mapToPublicNacebelCode(code, false);
+		// `parent` is only populated for levels 1–4 in the source; deeper
+		// levels nest by code prefix.
+		const parent =
+			code.level === 1
+				? undefined
+				: code.level === 2
+					? code.parent
+					: formatCodeForDisplay(code.code.slice(0, -1));
+		return {
+			level,
+			code: displayCode,
+			...(parent ? { parent } : {}),
+			titles,
+			description,
+			...(explanatoryNote ? { explanatoryNote } : {}),
+		};
+	});
 }
