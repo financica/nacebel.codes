@@ -2,7 +2,7 @@ import { ArrowUpRightIcon } from "lucide-react";
 import type { ReactNode } from "react";
 import { SiteHeader } from "@/components/site-header";
 import { Toaster } from "@/components/ui/sonner";
-import { LocaleProvider } from "@/contexts/locale-context";
+import { LocaleContext } from "@/contexts/locale-context";
 import { createT } from "@/lib/i18n/core";
 import type { Locale } from "@/lib/i18n/locales";
 import { siteScope } from "@/lib/i18n/scopes/site";
@@ -20,7 +20,7 @@ export function AppShell({
 }) {
 	const t = createT(locale, siteScope);
 	return (
-		<LocaleProvider value={locale}>
+		<LocaleContext value={locale}>
 			<SiteHeader />
 			<a
 				href="https://financica.app"
@@ -42,6 +42,6 @@ export function AppShell({
 			</a>
 			{children}
 			<Toaster />
-		</LocaleProvider>
+		</LocaleContext>
 	);
 }
