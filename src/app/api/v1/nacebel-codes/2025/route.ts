@@ -1,4 +1,4 @@
-// app/api/v1/nacebel-codes/2025/route.ts
+// src/app/api/v1/nacebel-codes/2025/route.ts
 import { getPaginatedNacebelCodes, searchNacebelCodes } from "@/lib/nacebelData";
 import { NextResponse } from "next/server";
 

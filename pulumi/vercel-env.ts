@@ -51,7 +51,7 @@ export function createVercelEnv(stripe: {
 	env("NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY", cfg.require("stripePublishableKey"));
 	if (stripe.webhookSecret) env("STRIPE_WEBHOOK_SECRET", stripe.webhookSecret);
 
-	// Signs the download links (lib/dataset/token.ts). Rotating it is a
+	// Signs the download links (src/lib/dataset/token.ts). Rotating it is a
 	// resource replace and invalidates every link minted before — buyers can
 	// re-mint theirs from the "lost your links?" form.
 	const tokenSecret = new random.RandomId("dataset-token-secret", { byteLength: 32 });

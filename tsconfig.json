@@ -2,7 +2,7 @@
 	"extends": "@ingram-tech/nk-dev/tsconfig/nextjs.json",
 	"compilerOptions": {
 		"paths": {
-			"@/*": ["./*"]
+			"@/*": ["./src/*"]
 		}
 	},
 	"include": [

@@ -20,6 +20,6 @@
 		"index.ts",
 		"stripe-catalogue.ts",
 		"vercel-env.ts",
-		"../lib/dataset/constants.ts"
+		"../src/lib/dataset/constants.ts"
 	]
 }

@@ -22,7 +22,7 @@ export const pageMetadata = createMetadata({
 });
 
 /**
- * The locale's share card, from `app/opengraph-image.tsx`.
+ * The locale's share card, from `src/app/opengraph-image.tsx`.
  *
  * Next attaches that file automatically only to the segment that declares it,
  * and a page returning its own `openGraph` object replaces the inherited one

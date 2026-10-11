@@ -1,6 +1,6 @@
 /**
  * The Stripe catalogue for the dataset purchase, declared from the same
- * constants the app resolves against at runtime (../lib/dataset/constants):
+ * constants the app resolves against at runtime (../src/lib/dataset/constants):
  * one source of truth, so a price change is a code review, not a Dashboard
  * click. Same shape as financica's pulumi/stripe-catalogue.ts.
  *
@@ -24,9 +24,9 @@ import {
 	DATASET_PRICE_LOOKUP_KEY,
 	DATASET_PRODUCT_DESCRIPTION,
 	DATASET_PRODUCT_NAME,
-} from "../lib/dataset/constants";
+} from "../src/lib/dataset/constants";
 
-// The events app/internal/webhooks/stripe/route.ts acts on: a paid checkout
+// The events src/app/internal/webhooks/stripe/route.ts acts on: a paid checkout
 // (card: `completed` already carries payment_status=paid; bank debit: the
 // async event lands when the money does).
 const WEBHOOK_EVENTS = [
