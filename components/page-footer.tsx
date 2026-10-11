@@ -5,6 +5,10 @@ import { useT } from "@/lib/i18n";
 import { siteScope } from "@/lib/i18n/scopes/site";
 import { ArrowUpRightIcon } from "lucide-react";
 
+// Read once at module load: a render-time Date call is impure and can differ
+// between the server render and hydration.
+const COPYRIGHT_YEAR = new Date().getFullYear();
+
 export function PageFooter() {
 	const locale = useLocale();
 	const t = useT(siteScope);
@@ -38,8 +42,7 @@ export function PageFooter() {
 						nacebel<span className="text-primary">.codes</span>
 					</p>
 					<p>
-						{t("NACE-BEL 2025 directory and API")} · ©{" "}
-						{new Date().getFullYear()}{" "}
+						{t("NACE-BEL 2025 directory and API")} · © {COPYRIGHT_YEAR}{" "}
 						<a
 							href="https://ingram.tech"
 							target="_blank"
