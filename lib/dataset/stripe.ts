@@ -14,7 +14,7 @@ import { DATASET_PRICE_LOOKUP_KEY, DATASET_PRODUCT_NAME } from "./constants";
 
 /** Tag every dataset session so the webhook can tell it from anything else
  *  this Stripe account (shared with other Ingram sites) emits. */
-export const SESSION_PRODUCT_TAG = { nacebel_product: "dataset" } as const;
+const SESSION_PRODUCT_TAG = { nacebel_product: "dataset" } as const;
 
 export async function createDatasetCheckout(
 	locale: Locale,

@@ -62,15 +62,6 @@ export function saveDatasetPurchase(purchase: DatasetPurchase): void {
 	emit();
 }
 
-export function clearDatasetPurchase(): void {
-	try {
-		window.localStorage.removeItem(KEY);
-	} catch {
-		// ignore
-	}
-	emit();
-}
-
 function subscribe(listener: () => void) {
 	listeners.add(listener);
 	const onStorage = (event: StorageEvent) => {

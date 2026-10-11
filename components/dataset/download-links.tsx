@@ -6,7 +6,7 @@ import { useT } from "@/lib/i18n";
 import { siteScope } from "@/lib/i18n/scopes/site";
 import { DATASET_FORMATS, type DatasetFormat } from "@/lib/dataset/constants";
 
-export const DATASET_FORMAT_LABELS: Record<DatasetFormat, string> = {
+const DATASET_FORMAT_LABELS: Record<DatasetFormat, string> = {
 	csv: "CSV",
 	json: "JSON",
 	xlsx: "Excel (XLSX)",

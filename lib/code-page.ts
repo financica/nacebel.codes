@@ -18,7 +18,7 @@ export function codeTitleFor(data: CodeData, locale: Locale): string {
 	return data.titles[locale] || data.titles.en || data.code;
 }
 
-export function codeSlugFor(data: CodeData, locale: Locale): string {
+function codeSlugFor(data: CodeData, locale: Locale): string {
 	return slugify(codeTitleFor(data, locale)) || "code";
 }
 

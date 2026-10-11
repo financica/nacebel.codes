@@ -2,7 +2,7 @@ import { z } from "zod";
 
 import { SUPPORTED_LOCALES } from "@/lib/i18n/locales";
 
-export const localeSchema = z.enum(SUPPORTED_LOCALES);
+const localeSchema = z.enum(SUPPORTED_LOCALES);
 
 export const checkoutBodySchema = z.object({ locale: localeSchema });
 
