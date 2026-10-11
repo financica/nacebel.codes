@@ -18,7 +18,7 @@
 		"@financica/nace-codes": "^3.1.0",
 		"@ingram-tech/nk-billing": "^0.3.9",
 		"@ingram-tech/nk-email": "^0.6.2",
-		"@ingram-tech/nk-forms": "^0.3.1",
+		"@ingram-tech/nk-forms": "^0.4.1",
 		"@ingram-tech/nk-i18n": "^0.5.3",
 		"@ingram-tech/nk-seo": "^0.10.2",
 		"@ingram-tech/nk-themes": "^0.2.4",

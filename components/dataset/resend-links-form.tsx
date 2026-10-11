@@ -1,6 +1,10 @@
 "use client";
 
-import { HoneypotInput, useBotProtection } from "@ingram-tech/nk-forms/react";
+import {
+	formEndpoint,
+	HoneypotInput,
+	useBotProtection,
+} from "@ingram-tech/nk-forms/react";
 import { type FormEvent, useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -8,7 +12,7 @@ import { useLocale } from "@/contexts/locale-context";
 import { useT } from "@/lib/i18n";
 import { siteScope } from "@/lib/i18n/scopes/site";
 
-const ENDPOINT = "/api/dataset/resend";
+const ENDPOINT = formEndpoint("dataset-resend");
 
 /** "Lost your links?" — one field, uniform confirmation whatever the outcome. */
 export function ResendLinksForm() {

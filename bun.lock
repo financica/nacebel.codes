@@ -9,7 +9,7 @@
         "@financica/nace-codes": "^3.1.0",
         "@ingram-tech/nk-billing": "^0.3.9",
         "@ingram-tech/nk-email": "^0.6.2",
-        "@ingram-tech/nk-forms": "^0.3.1",
+        "@ingram-tech/nk-forms": "^0.4.1",
         "@ingram-tech/nk-i18n": "^0.5.3",
         "@ingram-tech/nk-seo": "^0.10.2",
         "@ingram-tech/nk-themes": "^0.2.4",
@@ -172,7 +172,7 @@
 
     "@ingram-tech/nk-email": ["@ingram-tech/nk-email@0.6.2", "", {}, "sha512-NCTZbzv53jnWtNHtZSOlUQyFxbarPBowLX7hIU0J7IDL/4hcApYkSvpENBLDMyJ9OEcoR1NGk5FdIZ/RdujZ0A=="],
 
-    "@ingram-tech/nk-forms": ["@ingram-tech/nk-forms@0.3.1", "", { "dependencies": { "@ingram-tech/nk-email": "0.6.2" }, "peerDependencies": { "botid": ">=1.0.0", "react": "^18.0.0 || ^19.0.0" }, "optionalPeers": ["botid", "react"] }, "sha512-8EKzREm8jtPZgRKY86P3dvuKGYaqfwgCjngDpkXra3vRzujYOCBBbc+vJmCirIwl1jAsecayVmUuUFe2fGMXtg=="],
+    "@ingram-tech/nk-forms": ["@ingram-tech/nk-forms@0.4.1", "", { "dependencies": { "@ingram-tech/nk-email": "0.6.2" }, "peerDependencies": { "botid": ">=1.0.0", "react": "^18.0.0 || ^19.0.0" }, "optionalPeers": ["botid", "react"] }, "sha512-Oxl/jYS2yfwPO2yhAHD8SMfn+NLMyu1I+nwp5df8t29/ttnYYs5pWZ2bG0cQy2QOR1vOeYnHcOdzWqdYjlObSw=="],
 
     "@ingram-tech/nk-i18n": ["@ingram-tech/nk-i18n@0.5.3", "", { "dependencies": { "intl-messageformat": "^11.2.14" }, "peerDependencies": { "next": ">=14.0.0", "react": "^18.0.0 || ^19.0.0" }, "optionalPeers": ["next", "react"] }, "sha512-yUlxiUt9+1VZHnhVVNHkzvQB6r+T3Cu0h30yII2cvPB21qtk68of3Zv/LlYzScv11XLJz8haPjt4jxgok9A3Xw=="],
 
