@@ -7,6 +7,7 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { useLocale } from "@/contexts/locale-context";
 import { useT } from "@/lib/i18n";
 import { siteScope } from "@/lib/i18n/scopes/site";
+import { BrandMark } from "@/components/brand-mark";
 
 export function SiteHeader() {
 	const locale = useLocale();
@@ -21,12 +22,7 @@ export function SiteHeader() {
 					className="group inline-flex items-center gap-2 text-[1.05rem] leading-none font-bold tracking-tight"
 					aria-label={t("nacebel.codes — home")}
 				>
-					<span
-						aria-hidden
-						className="grid size-6 place-items-center rounded bg-primary font-mono text-[0.7rem] font-bold text-primary-foreground"
-					>
-						NB
-					</span>
+					<BrandMark className="size-6" />
 					<span>
 						nacebel<span className="text-primary">.codes</span>
 					</span>
